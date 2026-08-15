@@ -53,6 +53,8 @@ completo.
 | Transações (BEGIN/COMMIT/ROLLBACK) obrigatórias em operações multi-tabela | Padrão herdado | — |
 | Catálogo dinâmico via banco (não hardcoded) | Permite ao lojista trocar peças em vitrine sem depender de deploy de código | Catálogo fixo no React (mais rápido, mas engessado) |
 | Painel admin já no primeiro ciclo | Decisão do PO: leads e catálogo precisam ser geridos desde o início | Adiar para ciclo 2 (reduziria escopo do ciclo 1) |
+| Branch de trabalho separada da `main` para toda feature/fix, a partir do momento em que o MVP entrou em deploy | `main` é a versão estável e aprovada em produção; qualquer trabalho em andamento não deve arriscá-la | Commitar direto na `main` |
+| Lista de pendências (seção 7) é cumulativa/persistente | Itens só saem da lista quando o PO decidir resolvê-los explicitamente — não são descartados por passagem de ciclo | Reavaliar/podar a lista a cada ciclo |
 
 ## 6. Histórico de Ciclos
 
