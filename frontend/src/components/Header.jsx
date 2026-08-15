@@ -11,12 +11,18 @@ const LINKS = [
 
 export default function Header() {
   const [condensed, setCondensed] = useState(false)
+  // A marca no header só entra depois que o wordmark gigante do hero sai de
+  // cena — dois "Selecta Watches" na mesma tela enfraquecem a abertura.
+  const [branded, setBranded] = useState(false)
   const [open, setOpen] = useState(false)
 
   // Header ganha fundo só depois que o usuário sai do hero — assim a primeira
   // dobra fica completamente limpa, sem barra competindo com a imagem.
   useEffect(() => {
-    const onScroll = () => setCondensed(window.scrollY > 80)
+    const onScroll = () => {
+      setCondensed(window.scrollY > 80)
+      setBranded(window.scrollY > window.innerHeight * 0.7)
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -31,7 +37,11 @@ export default function Header() {
 
   return (
     <>
-      <header className={`hdr ${condensed ? 'is-condensed' : ''}`}>
+      <header
+        className={`hdr ${condensed ? 'is-condensed' : ''} ${
+          branded || open ? 'is-branded' : ''
+        }`}
+      >
         <div className="hdr__inner shell">
           <nav className="hdr__nav" aria-label="Navegação principal">
             {LINKS.map((link) => (

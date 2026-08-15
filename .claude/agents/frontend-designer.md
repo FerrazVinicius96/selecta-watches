@@ -75,3 +75,35 @@ Este é um ciclo de reestruturação, não incremento — pode reorganizar
 componentes/CSS livremente se o resultado for mais fiel a esse padrão,
 desde que mantenha os requisitos funcionais do `PROJECT.md` (catálogo
 consumindo API real, formulário de lead funcional, sem hardcode).
+
+## Hero em vídeo (ciclo seguinte)
+
+O vídeo Hero que antes estava fora de escopo agora entra: o PO forneceu um
+vídeo de produto real em `frontend/public/video/hero-loop.mp4` (~2,5MB).
+
+- Vídeo em loop infinito, autoplay, mudo, `playsinline` (autoplay só
+  funciona sem som e com esses atributos em navegadores modernos/mobile).
+- Aplicar **blur** sobre o vídeo (ex.: `filter: blur(...)` num wrapper, com
+  leve overscan/scale para o blur não revelar bordas nítidas) — o vídeo é
+  textura de fundo, não o elemento em foco.
+- **"SELECTA WATCHES" é o elemento tipográfico principal** sobre o vídeo,
+  no espírito de wordmark de abertura (como a Rolex abre com coroa+nome
+  sobre o hero) — substitui o título "O tempo não se compra. Escolhe-se"
+  como destaque do Hero. Esse texto e o restante do conteúdo atual do Hero
+  (kicker, lede, CTAs, números) descem para um bloco de apoio logo
+  abaixo/seguinte, sem serem descartados — são conteúdo real do produto,
+  só perdem o protagonismo tipográfico para o wordmark.
+- Manter legibilidade: scrim/gradiente sobre o vídeo desfocado, na mesma
+  lógica que já existe hoje para a imagem estática do Hero.
+- Fallback: se o vídeo não carregar (ex.: mobile com dados limitados ou
+  erro), cair de volta numa imagem estática/poster — não deixar tela preta
+  ou vazia.
+- Respeitar `prefers-reduced-motion: reduce`: pausar o vídeo ou trocar por
+  poster estático nesse caso.
+- Vídeo local servido como asset estático do Vite (`public/`), sem
+  serviço externo — mesmo raciocínio já usado para as imagens do
+  catálogo no backend.
+- Harmonizar com o restante da página já reestruturada (paleta dark,
+  tipografia serifada nos títulos, CTA em pill, ritmo eyebrow→título→CTA
+  já padronizado nas outras seções) — o Hero não pode parecer de outro
+  projeto.

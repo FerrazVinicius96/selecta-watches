@@ -39,6 +39,15 @@
   gap: 0.1rem;
   justify-self: center;
   line-height: 1;
+  transition: opacity 0.5s var(--ease);
+}
+
+/* No topo da página a marca já está gigante no hero (wordmark de abertura).
+   Repetir o nome duas vezes na mesma tela enfraquece o gesto — então a marca
+   do header só aparece quando o hero sai de cena. */
+.hdr:not(.is-branded) .hdr__brand {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hdr__name {

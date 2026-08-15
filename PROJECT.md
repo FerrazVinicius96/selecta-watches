@@ -188,6 +188,88 @@ completo.
 
 **Aguardando sua aprovação para prosseguir.**
 
+### Ciclo 3 — aprovado
+
+## Checkpoint — Ciclo 3
+
+**Entregue neste ciclo:**
+
+- Motion premium na landing pública (branch `feature/ui-motion-enhancements`,
+  commitada localmente, ainda sem push e sem mesclar à `main`): scroll-triggered
+  reveals com easing custom em todas as seções, staggering em grupos de
+  elementos, text masking/line reveal nos títulos grandes, selos com traço
+  SVG se desenhando, marquee infinito na faixa de maisons, parallax em 4
+  camadas no Hero (imagem, halo, conteúdo, rodapé do hero) com velocidades
+  bem diferenciadas para sensação real de profundidade no scroll.
+- Reestruturação robusta da landing pública inspirada no rolex.com (branch
+  `feature/ui-rolex-inspired`, commitada com push para o remoto, ainda não
+  mesclada à `main` — branch independente da anterior): catálogo deixou de
+  ser um grid de cards e passou a apresentar **uma peça por vez, em tela
+  cheia**, com indicador de progresso ("01/03"), foto cinematográfica e
+  selo de autenticidade com traço SVG; header simplificado e centralizado
+  na marca; institucional, confiança e formulário de lead padronizados no
+  ritmo eyebrow → título grande → CTA único em pill → espaço generoso;
+  rodapé simplificado em colunas de links.
+- Hero em vídeo (mesma branch `feature/ui-rolex-inspired`): vídeo de
+  produto fornecido pelo PO (`frontend/public/video/hero-loop.mp4`, ~2,5MB)
+  em loop/mudo/desfocado como textura de fundo, com "SELECTA WATCHES" como
+  elemento tipográfico principal sobre o vídeo (estilo wordmark de
+  abertura); o conteúdo anterior do Hero (kicker, título, lede, CTAs,
+  números) foi preservado, só perdeu o protagonismo tipográfico. Fallback
+  para imagem estática se o vídeo não carregar; vídeo pausa quando o Hero
+  sai da viewport; `prefers-reduced-motion` remove o vídeo por completo.
+
+**Como validar:**
+
+1. `git checkout feature/ui-rolex-inspired` (contém a reestruturação Rolex +
+   Hero em vídeo; é a branch mais recente e recomendada para revisão).
+2. `cd backend && npm run dev`, `cd frontend && npm run dev` → acessar o
+   frontend público, conferir: Hero com vídeo em loop e wordmark "SELECTA
+   WATCHES", catálogo com as 3 peças reais em tela cheia navegáveis pelo
+   indicador de progresso, formulário de lead enviando com sucesso.
+3. Para conferir o ciclo de motion (reveals/parallax/marquee) isoladamente,
+   `git checkout feature/ui-motion-enhancements` — ainda não mesclado com a
+   reestruturação Rolex-inspired.
+
+**Decisões técnicas tomadas:**
+
+- Duas branches paralelas a partir da `main` (`feature/ui-motion-enhancements`
+  e `feature/ui-rolex-inspired`) em vez de uma sequência única → o PO pediu
+  explicitamente para preservar o primeiro ciclo de motion intacto enquanto
+  explorava uma reestruturação mais profunda a partir da `main` limpa;
+  decisão de qual/como mesclar fica para um ciclo futuro.
+- Política de branch obrigatória para toda feature/fix a partir do MVP em
+  deploy → `main` é a versão estável em produção e não deve ser arriscada
+  por trabalho em andamento (ver seção 5).
+- Vídeo do Hero versionado como asset estático em `frontend/public/`, sem
+  serviço externo (mesmo raciocínio das imagens do catálogo) → simplicidade
+  no estágio atual; risco de crescimento do repositório se o vídeo for
+  trocado com frequência, registrado como pendência.
+- Parallax do Hero simplificado ao entrar o vídeo (removido o blur
+  crescente no scroll que existia com a imagem estática) → recalcular blur
+  sobre vídeo a cada frame de scroll é caro e travava a rolagem; mantido
+  apenas deslocamento/transparência entre camadas.
+
+**Pendências / riscos conhecidos:**
+
+- `feature/ui-motion-enhancements` e `feature/ui-rolex-inspired` ainda não
+  foram mescladas entre si nem com a `main` — PO decide o caminho (uma
+  incorpora a outra, ou seguem como experimentos e só uma vira PR).
+- Hero em vídeo não testado em iPhone/Safari real (só emulado) — autoplay
+  em modo Economia de Bateria da Apple pode cair no fallback estático, o
+  que é o comportamento desejado, mas vale confirmar em aparelho físico.
+- Vídeo de 2,5MB pode pesar em conexões móveis lentas — aceitável por ora,
+  mitigável no futuro com versão menor/WebM condicional à largura de tela.
+- Scroll-snap do catálogo (uma peça por tela) não testado em iOS Safari
+  real.
+
+**Próximo ciclo (proposto):**
+
+- PO decide: mesclar as branches de UI, ou escolher uma como definitiva;
+  testes em dispositivos físicos (iPhone); ou outra prioridade.
+
+**Aguardando sua aprovação para prosseguir.**
+
 ## 7. Pendências e Riscos Ativos
 
 - `react-router-dom` do admin com 2 vulnerabilidades moderadas — requer
@@ -200,3 +282,10 @@ completo.
   autorização e foram desfeitos (histórico de commits zerado, arquivos
   preservados). Nenhum commit deste projeto deve ser feito por subagents;
   commits só acontecem quando o PO pedir explicitamente.
+- Fotos institucionais e do Hero (fora do catálogo) ainda são de banco de
+  imagens — só as 3 peças do catálogo têm fotos reais fornecidas pelo PO.
+- `feature/ui-motion-enhancements` e `feature/ui-rolex-inspired` são
+  branches paralelas a partir da `main`, ainda não mescladas entre si —
+  decisão de caminho (merge, escolher uma, ou manter ambas) pendente do PO.
+- Hero em vídeo e scroll-snap do catálogo (peça por tela) não testados em
+  dispositivo iOS real, só emulado no Chrome.
