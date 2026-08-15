@@ -12,16 +12,28 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
+// CORS_ORIGIN aceita múltiplas origens separadas por vírgula (ex: URL do
+// frontend público + URL do admin), já que ambos rodam em domínios .vercel.app
+// distintos e o navegador valida a origem exata de cada requisição.
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+	.split(',')
+	.map((origin) => origin.trim())
+	.filter(Boolean);
+
 app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || '*',
-  })
+	cors({
+		origin: allowedOrigins.length > 0 ? allowedOrigins : '*',
+	}),
 );
+
 app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, '..', 'public', 'images')));
+app.use(
+	'/images',
+	express.static(path.join(__dirname, '..', 'public', 'images')),
+);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+	res.json({ status: 'ok' });
 });
 
 app.use('/api', watchRoutes);
@@ -29,7 +41,7 @@ app.use('/api', leadRoutes);
 app.use('/api/admin', adminRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({ error: 'Rota não encontrada.' });
+	res.status(404).json({ error: 'Rota não encontrada.' });
 });
 
 app.use(errorHandler);
