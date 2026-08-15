@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createLead } from '../api/client'
 import Reveal from './Reveal'
+import MaskedText from './MaskedText'
 import './LeadForm.css'
 
 const PURPOSES = [
@@ -86,11 +87,17 @@ export default function LeadForm({ prefill }) {
           <Reveal as="p" className="eyebrow">
             Atendimento privado
           </Reveal>
-          <Reveal as="h2" className="display lead__title" delay={80}>
-            Uma conversa antes
-            <br />
-            de qualquer <em>compra</em>
-          </Reveal>
+          <MaskedText
+            as="h2"
+            className="display lead__title"
+            delay={80}
+            lines={[
+              'Uma conversa antes',
+              <>
+                de qualquer <em>compra</em>
+              </>,
+            ]}
+          />
           <Reveal as="p" className="lede lead__lede" delay={150}>
             Deixe seu contato e um especialista retorna em até 1 dia útil, com o
             catálogo completo e disponibilidade das peças do seu interesse. Sem

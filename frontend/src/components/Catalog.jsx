@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { fetchFeaturedWatches } from '../api/client'
 import Reveal from './Reveal'
+import MaskedText from './MaskedText'
 import WatchCard from './WatchCard'
 import './Catalog.css'
 
@@ -34,9 +35,17 @@ export default function Catalog({ onSelectWatch }) {
             <Reveal as="p" className="eyebrow">
               Coleção em destaque
             </Reveal>
-            <Reveal as="h2" className="display cat__title" delay={80}>
-              Peças <em>selecionadas</em> desta temporada
-            </Reveal>
+            <MaskedText
+              as="h2"
+              className="display cat__title"
+              delay={80}
+              lines={[
+                <>
+                  Peças <em>selecionadas</em>
+                </>,
+                'desta temporada',
+              ]}
+            />
           </div>
           <Reveal as="p" className="cat__note" delay={160}>
             A vitrine é rotativa e reflete o estoque disponível no momento.
@@ -74,8 +83,11 @@ export default function Catalog({ onSelectWatch }) {
         {state.status === 'ready' && (
           <>
             <div className="cat__grid">
+              {/* Stagger por posição na linha (i % 3), não pelo índice
+                  absoluto: assim a cascata se repete a cada fileira em vez de
+                  o último card esperar segundos para aparecer. */}
               {state.watches.map((watch, i) => (
-                <Reveal key={watch.id} delay={i * 90}>
+                <Reveal key={watch.id} delay={(i % 3) * 110}>
                   <WatchCard watch={watch} index={i} onSelect={onSelectWatch} />
                 </Reveal>
               ))}

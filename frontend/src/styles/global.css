@@ -290,6 +290,64 @@ button {
   transform: none;
 }
 
+/* --------------------- text masking / line reveal ---------------------- */
+
+/* Cada linha é um "corte" por onde o texto emerge. O padding compensa
+   descendentes (g, p, y) e a inclinação do itálico, que de outra forma
+   seriam cortados pelo overflow; a margem negativa devolve o espaço para
+   o ritmo vertical do título não mudar. */
+.mask__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  padding-right: 0.12em;
+  margin-right: -0.12em;
+}
+
+.mask__line-in {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.15s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.mask.is-visible .mask__line-in {
+  transform: none;
+}
+
+/* -------------------- microinterações contínuas ------------------------ */
+
+/* Levitação: usada só em um elemento-chave por página. */
+@keyframes floatSoft {
+  from {
+    transform: translateY(-5px);
+  }
+  to {
+    transform: translateY(5px);
+  }
+}
+
+/* Respiração de luz: sinaliza "sistema vivo" sem movimento de layout. */
+@keyframes breathe {
+  from {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+/* Desenho de traço em SVG (usa pathLength="1", então o comprimento é
+   normalizado e o mesmo keyframe serve para qualquer forma). */
+@keyframes drawStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Acessibilidade: quem pede menos movimento recebe a página sem animação. */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -302,10 +360,36 @@ button {
     transition: none;
   }
 
+  .mask__line-in {
+    transform: none;
+    transition: none;
+  }
+
+  /* Animações contínuas são desligadas por completo. Zerar a duração de uma
+     animação infinita a faria reiniciar milhares de vezes por segundo — pior
+     que deixá-la rodando. */
+  .trust__marquee-track,
+  .mnf__frame.is-visible,
+  .hero__glow,
+  .hero__scroll-dot,
+  .cat__status-mark::after,
+  .lead__success,
+  .skel {
+    animation: none !important;
+  }
+
+  /* Ícones desenhados por stroke precisam aparecer inteiros, já que a
+     animação que os "desenharia" foi desligada. */
+  .seal__icon path,
+  .seal__icon circle,
+  .lead__success-mark svg path {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
 }

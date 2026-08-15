@@ -23,6 +23,13 @@
   background: var(--c-surface);
 }
 
+/* Levitação lenta (±5px) só depois que a entrada termina — o atraso de 1.4s
+   evita que a animação atropele o transform do reveal. É a única peça da
+   página que se move sozinha depois de carregada. */
+.mnf__frame.is-visible {
+  animation: floatSoft 7s var(--ease) 1.4s infinite alternate;
+}
+
 .mnf__frame img {
   width: 100%;
   height: 100%;

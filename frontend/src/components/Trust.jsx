@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Reveal from './Reveal'
+import MaskedText from './MaskedText'
 import './Trust.css'
 
 // Conteúdo placeholder plausível — o PROJECT.md registra que depoimentos e
@@ -78,11 +79,17 @@ export default function Trust() {
           <Reveal as="p" className="eyebrow">
             Confiança
           </Reveal>
-          <Reveal as="h2" className="display trust__title" delay={80}>
-            O que sustenta uma
-            <br />
-            compra de <em>alto valor</em>
-          </Reveal>
+          <MaskedText
+            as="h2"
+            className="display trust__title"
+            delay={80}
+            lines={[
+              'O que sustenta uma',
+              <>
+                compra de <em>alto valor</em>
+              </>,
+            ]}
+          />
         </header>
 
         <div className="trust__seals">
@@ -158,8 +165,11 @@ export default function Trust() {
 }
 
 /* Ícones em traço fino, desenhados inline: mantêm o peso visual da tipografia
-   e evitam uma dependência de biblioteca de ícones. */
+   e evitam uma dependência de biblioteca de ícones.
+   `pathLength={1}` normaliza o comprimento de cada traço para 1, o que permite
+   que um único keyframe CSS "desenhe" qualquer uma das formas na entrada. */
 function SealIcon({ name }) {
+  const stroke = { pathLength: 1 }
   const common = {
     width: 34,
     height: 34,
@@ -176,32 +186,32 @@ function SealIcon({ name }) {
   if (name === 'shield') {
     return (
       <svg {...common}>
-        <path d="M12 3l7 3v5.5c0 4.2-2.9 7.9-7 9.5-4.1-1.6-7-5.3-7-9.5V6l7-3z" />
-        <path d="M9 12l2.2 2.2L15.5 10" />
+        <path {...stroke} d="M12 3l7 3v5.5c0 4.2-2.9 7.9-7 9.5-4.1-1.6-7-5.3-7-9.5V6l7-3z" />
+        <path {...stroke} d="M9 12l2.2 2.2L15.5 10" />
       </svg>
     )
   }
   if (name === 'box') {
     return (
       <svg {...common}>
-        <path d="M3.5 7.5L12 3.5l8.5 4v9L12 20.5l-8.5-4v-9z" />
-        <path d="M3.5 7.5L12 11.5l8.5-4M12 11.5v9" />
+        <path {...stroke} d="M3.5 7.5L12 3.5l8.5 4v9L12 20.5l-8.5-4v-9z" />
+        <path {...stroke} d="M3.5 7.5L12 11.5l8.5-4M12 11.5v9" />
       </svg>
     )
   }
   if (name === 'cycle') {
     return (
       <svg {...common}>
-        <path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6" />
-        <path d="M18 3v3.8h-3.8M6 21v-3.8h3.8" />
+        <path {...stroke} d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6" />
+        <path {...stroke} d="M18 3v3.8h-3.8M6 21v-3.8h3.8" />
       </svg>
     )
   }
   return (
     <svg {...common}>
-      <circle cx="12" cy="10" r="6" />
-      <path d="M9 10.4l2.1 2.1L15 8.6" />
-      <path d="M8.6 15.4L7.5 21l4.5-2.2L16.5 21l-1.1-5.6" />
+      <circle {...stroke} cx="12" cy="10" r="6" />
+      <path {...stroke} d="M9 10.4l2.1 2.1L15 8.6" />
+      <path {...stroke} d="M8.6 15.4L7.5 21l4.5-2.2L16.5 21l-1.1-5.6" />
     </svg>
   )
 }

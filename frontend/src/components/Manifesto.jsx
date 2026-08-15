@@ -1,4 +1,5 @@
 import Reveal from './Reveal'
+import MaskedText from './MaskedText'
 import './Manifesto.css'
 
 const PILLARS = [
@@ -43,11 +44,17 @@ export default function Manifesto() {
               A Casa
             </Reveal>
 
-            <Reveal as="h2" className="display mnf__title" delay={90}>
-              Autenticidade não é
-              <br />
-              promessa. É <em>protocolo</em>.
-            </Reveal>
+            <MaskedText
+              as="h2"
+              className="display mnf__title"
+              delay={90}
+              lines={[
+                'Autenticidade não é',
+                <>
+                  promessa. É <em>protocolo</em>.
+                </>,
+              ]}
+            />
 
             <Reveal as="p" className="lede mnf__lede" delay={160}>
               A Selecta Watches nasceu de uma inquietação simples: no mercado de

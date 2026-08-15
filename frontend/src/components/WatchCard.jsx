@@ -7,11 +7,10 @@ export default function WatchCard({ watch, index, onSelect }) {
 	const [failed, setFailed] = useState(false);
 	const hasImage = Boolean(watch.image_url) && !failed;
 
+	// O stagger é controlado pelo <Reveal> que envolve o card no Catalog;
+	// o card em si não gerencia atraso de animação.
 	return (
-		<article
-			className="wcard"
-			style={{ '--reveal-delay': `${index * 90}ms` }}
-		>
+		<article className="wcard">
 			<div className="wcard__media">
 				{
 					hasImage ?

@@ -83,3 +83,26 @@ pesada, seguindo a decisão já tomada no Ciclo 1 de manter o bundle enxuto.
 Acessibilidade: envolver as animações contínuas/scroll em
 `@media (prefers-reduced-motion: reduce)` para reduzir ou remover o
 movimento quando o usuário sinalizar essa preferência no SO.
+
+### Parallax em camadas (profundidade no scroll)
+
+O Hero já tinha um parallax de uma camada só (imagem) — feedback do PO foi
+que o resultado ficou sutil demais para o efeito de "profundidade" que ele
+queria. Padrão a partir de agora para o Hero (e qualquer seção que precise
+de sensação cinematográfica de profundidade):
+
+- Pelo menos **3 camadas** com velocidades de scroll distintas, do fundo
+  para a frente (quanto mais "atrás" visualmente, mais devagar se move; o
+  primeiro plano se move mais rápido/próximo do cursor). Ex.: imagem de
+  fundo `y * 0.15`, halo/glow `y * 0.25`, bloco de texto/kicker `y * 0.4-0.5`.
+- Diferenças de velocidade devem ser perceptíveis a olho nu (não apenas
+  0.15 vs 0.18 como estava) — é a diferença de razão entre camadas que cria
+  profundidade, não a magnitude absoluta.
+- Continuar usando `requestAnimationFrame` + `transform: translate3d`
+  (nunca `top`/`margin`) para não travar o scroll; sempre com
+  `will-change: transform` nas camadas animadas.
+- Fade/blur leve na camada de fundo conforme o scroll avança (ex.:
+  `filter: blur()` crescente ou opacity decrescente) reforça a sensação de
+  profundidade sem exigir uma segunda técnica.
+- Respeitar `prefers-reduced-motion: reduce` também aqui — nesse caso,
+  travar todas as camadas em `transform: none`.

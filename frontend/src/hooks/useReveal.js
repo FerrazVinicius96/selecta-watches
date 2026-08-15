@@ -30,7 +30,10 @@ export function useReveal({ threshold = 0.15, once = true } = {}) {
           setVisible(false)
         }
       },
-      { threshold, rootMargin: '0px 0px -8% 0px' }
+      // Sem margem negativa embaixo: ela criava uma "zona morta" no fim da
+      // página, e o último bloco (rodapé) nunca chegava a disparar. O ponto de
+      // gatilho já é controlado pelo threshold (15% do elemento visível).
+      { threshold }
     )
 
     observer.observe(el)

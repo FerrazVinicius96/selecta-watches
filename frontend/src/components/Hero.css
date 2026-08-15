@@ -12,11 +12,15 @@
 
 /* ------------------------------ mídia ---------------------------------- */
 
+/* Camada 1 (mais ao fundo, a mais lenta). --hero-blur/--hero-dim são escritos
+   pelo JS a cada quadro e consumidos pelo filtro da imagem: assim o desfoque
+   progressivo não exige um segundo elemento nem reescrever o filtro inteiro. */
 .hero__media {
   position: absolute;
   inset: -6% 0 0 0;
   z-index: 0;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .hero__media img {
@@ -24,7 +28,8 @@
   height: 112%;
   object-fit: cover;
   object-position: 62% 40%;
-  filter: grayscale(0.35) contrast(1.06) brightness(0.62);
+  filter: grayscale(0.35) contrast(1.06) brightness(calc(0.62 * var(--hero-dim, 1)))
+    blur(var(--hero-blur, 0px));
   transform: scale(1.08);
   opacity: 0;
   transition: opacity 1.6s var(--ease), transform 2.6s var(--ease-out-expo);
@@ -40,6 +45,8 @@
 .hero__scrim {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(
       to top,
       var(--c-bg) 2%,
@@ -50,13 +57,52 @@
     linear-gradient(to right, rgba(8, 8, 10, 0.92) 0%, rgba(8, 8, 10, 0.1) 68%);
 }
 
+/* Camada 2 (velocidade intermediária). O wrapper existe só para o parallax:
+   o halo tem sua própria animação de "respiro", e misturar os dois transforms
+   no mesmo elemento faria um sobrescrever o outro. */
+.hero__glow-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Halo champanhe atrás da coluna de texto, pulsando muito lentamente.
+   Só opacidade/scale (propriedades que a GPU compõe): custo próximo de zero. */
+.hero__glow {
+  position: absolute;
+  left: -12%;
+  bottom: 4%;
+  width: 62vw;
+  height: 62vw;
+  max-width: 900px;
+  max-height: 900px;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.1), transparent 62%);
+  opacity: 0;
+  transition: opacity 2s var(--ease) 0.6s;
+}
+
+/* A opacidade de destino (0.6) é a mesma do primeiro quadro da animação,
+   para não haver salto quando o "respiro" assume o controle. */
+.hero.is-ready .hero__glow {
+  opacity: 0.6;
+  animation: breathe 9s var(--ease) 2.6s infinite alternate;
+}
+
 /* ----------------------------- conteúdo -------------------------------- */
 
+/* Camada 3 (primeiro plano): sobe mais rápido que a própria rolagem. */
 .hero__content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
   margin-top: auto;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
 }
 
 .hero__kicker {
@@ -154,7 +200,7 @@
 
 .hero__foot {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -163,6 +209,7 @@
   margin-top: clamp(3rem, 7vw, 6rem);
   padding-top: 1.75rem;
   border-top: 1px solid var(--c-line);
+  will-change: transform;
   opacity: 0;
   transition: opacity 1.2s var(--ease) 1.25s;
 }
@@ -232,6 +279,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.9s var(--ease) calc(1.35s + var(--i) * 0.12s),
+    transform 0.9s var(--ease-out-expo) calc(1.35s + var(--i) * 0.12s);
+}
+
+.hero.is-ready .hero__facts li {
+  opacity: 1;
+  transform: none;
 }
 
 .hero__facts strong {
@@ -279,5 +335,23 @@
 
   .hero__facts strong {
     font-size: 1.2rem;
+  }
+}
+
+/* Quem pede menos movimento não recebe parallax nenhum: as camadas ficam
+   travadas e a imagem sem desfoque. O JS também deixa de escutar o scroll —
+   isto aqui é a rede de segurança visual. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__media,
+  .hero__glow-layer,
+  .hero__content,
+  .hero__foot {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto;
+  }
+
+  .hero__media img {
+    filter: grayscale(0.35) contrast(1.06) brightness(0.62) !important;
   }
 }
