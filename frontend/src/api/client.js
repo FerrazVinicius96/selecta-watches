@@ -4,59 +4,70 @@
  * passa por /api. Em dev o Vite faz proxy de /api para localhost:3001.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api'
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function request(path, options = {}) {
-  let response
-  try {
-    response = await fetch(`${BASE_URL}${path}`, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options,
-    })
-  } catch {
-    // Falha de rede: API fora do ar, DNS, offline.
-    throw new ApiError('Não foi possível conectar ao servidor.', 0)
-  }
+	let response;
+	try {
+		response = await fetch(`${BASE_URL}${path}`, {
+			headers: { 'Content-Type': 'application/json' },
+			...options,
+		});
+	} catch {
+		// Falha de rede: API fora do ar, DNS, offline.
+		throw new ApiError('Não foi possível conectar ao servidor.', 0);
+	}
 
-  if (response.status === 204) return null
+	if (response.status === 204) return null;
 
-  const raw = await response.text()
-  let data = null
-  if (raw) {
-    try {
-      data = JSON.parse(raw)
-    } catch {
-      data = null
-    }
-  }
+	const raw = await response.text();
+	let data = null;
+	if (raw) {
+		try {
+			data = JSON.parse(raw);
+		} catch {
+			data = null;
+		}
+	}
 
-  if (!response.ok) {
-    throw new ApiError(
-      data?.error || data?.message || 'Ocorreu um erro inesperado.',
-      response.status
-    )
-  }
+	if (!response.ok) {
+		throw new ApiError(
+			data?.error || data?.message || 'Ocorreu um erro inesperado.',
+			response.status,
+		);
+	}
 
-  return data
+	return data;
 }
 
 export class ApiError extends Error {
-  constructor(message, status) {
-    super(message)
-    this.name = 'ApiError'
-    this.status = status
-  }
+	constructor(message, status) {
+		super(message);
+		this.name = 'ApiError';
+		this.status = status;
+	}
 }
 
 /** GET /api/watches?featured=true — catálogo em destaque. */
 export function fetchFeaturedWatches() {
-  return request('/watches?featured=true')
+	return request('/watches?featured=true');
 }
 
 /** POST /api/leads — { name, contact, interest } */
 export function createLead(payload) {
-  return request('/leads', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+	return request('/leads', {
+		method: 'POST',
+		body: JSON.stringify(payload),
+	});
+}
+
+/** Resolve um image_url relativo (ex: "/images/watches/x.png") para URL
+ * absoluta apontando pro backend. Em produção o backend está em outro
+ * domínio (Railway), diferente do frontend (Vercel) — caminho relativo
+ * resolveria contra o domínio errado. */
+export function resolveImageUrl(imageUrl) {
+	if (!imageUrl) return imageUrl;
+	if (/^https?:\/\//.test(imageUrl)) return imageUrl; // já é absoluta
+	const backendOrigin = BASE_URL.replace(/\/api\/?$/, '');
+	return `${backendOrigin}${imageUrl}`;
 }
