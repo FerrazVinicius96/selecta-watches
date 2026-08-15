@@ -3,22 +3,12 @@
   border-top: 1px solid var(--c-line);
 }
 
-.trust__head {
-  /* Largura em rem (não em ch): "ch" seria calculado sobre a fonte do
-     container, não sobre a display, e quebrava o título em linhas curtas. */
-  max-width: min(100%, 44rem);
-  margin-bottom: clamp(3rem, 6vw, 4.5rem);
-}
-
-.trust__title {
-  margin-top: 1.25rem;
-}
-
 /* ------------------------------ selos ---------------------------------- */
 
 .trust__seals {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: clamp(4rem, 9vw, 8rem);
   border-top: 1px solid var(--c-line);
   border-left: 1px solid var(--c-line);
 }

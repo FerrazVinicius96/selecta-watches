@@ -1,42 +1,61 @@
 import './Footer.css'
 
+const COLS = [
+  {
+    title: 'Navegar',
+    links: [
+      { href: '#colecao', label: 'Coleção' },
+      { href: '#casa', label: 'A Casa' },
+      { href: '#confianca', label: 'Confiança' },
+      { href: '#contato', label: 'Contato' },
+    ],
+  },
+  {
+    title: 'Atendimento',
+    links: [
+      { href: '#contato', label: 'Solicitar catálogo' },
+      { href: '#contato', label: 'Falar com especialista' },
+      { href: '#contato', label: 'Avaliar minha peça' },
+    ],
+  },
+  {
+    title: 'Showroom',
+    items: ['Rua Haddock Lobo, 1600', 'Jardins — São Paulo, SP', 'Visitas com hora marcada'],
+  },
+]
+
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
     <footer className="ftr">
       <div className="shell">
-        <div className="ftr__top">
-          <div className="ftr__brand">
-            <span className="ftr__mark" aria-hidden="true" />
-            <p className="ftr__wordmark">Selecta Watches</p>
-            <p className="ftr__tagline">
-              Curadoria de relógios originais, com procedência documentada.
-            </p>
-          </div>
-
-          <nav className="ftr__cols" aria-label="Rodapé">
-            <div>
-              <h4>Navegar</h4>
-              <a href="#colecao">Coleção</a>
-              <a href="#casa">A Casa</a>
-              <a href="#confianca">Confiança</a>
-              <a href="#contato">Contato</a>
-            </div>
-            <div>
-              <h4>Atendimento</h4>
-              <a href="#contato">Solicitar catálogo</a>
-              <a href="#contato">Falar com especialista</a>
-              <a href="#contato">Avaliar minha peça</a>
-            </div>
-            <div>
-              <h4>Showroom</h4>
-              <p>Rua Haddock Lobo, 1600</p>
-              <p>Jardins — São Paulo, SP</p>
-              <p>Visitas com hora marcada</p>
-            </div>
-          </nav>
+        {/* Marca centralizada acima das colunas: fecha a página do mesmo jeito
+            que o header a abre, dando simetria à leitura. */}
+        <div className="ftr__brand">
+          <span className="ftr__mark" aria-hidden="true" />
+          <p className="ftr__wordmark">Selecta</p>
+          <p className="ftr__sub">Watches</p>
+          <p className="ftr__tagline">
+            Curadoria de relógios originais, com procedência documentada.
+          </p>
         </div>
+
+        <nav className="ftr__cols" aria-label="Rodapé">
+          {COLS.map((col) => (
+            <div key={col.title}>
+              <h4>{col.title}</h4>
+              {col.links?.map((l) => (
+                <a key={l.label} href={l.href}>
+                  {l.label}
+                </a>
+              ))}
+              {col.items?.map((t) => (
+                <p key={t}>{t}</p>
+              ))}
+            </div>
+          ))}
+        </nav>
 
         <div className="ftr__bottom">
           <span>© {year} Selecta Watches. Todos os direitos reservados.</span>

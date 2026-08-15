@@ -18,34 +18,25 @@
   pointer-events: none;
 }
 
-.lead__grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 0.95fr;
-  gap: clamp(2.5rem, 6vw, 6rem);
-  align-items: start;
-}
-
-.lead__title {
-  margin-top: 1.25rem;
-}
-
-.lead__lede {
-  margin-top: 1.75rem;
-}
-
+/* Coluna única e centrada: no fim da página o visitante já decidiu, então
+   nada deve competir com o formulário — nem uma segunda coluna de texto. */
 .lead__meta {
+  position: relative;
   display: flex;
-  gap: clamp(2rem, 5vw, 4rem);
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  padding-top: 1.75rem;
+  justify-content: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  max-width: 40rem;
+  margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+  padding-top: 2rem;
   border-top: 1px solid var(--c-line);
+  text-align: center;
 }
 
 .lead__meta div {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  align-items: center;
 }
 
 .lead__meta-label {
@@ -64,9 +55,12 @@
 /* ----------------------------- painel ---------------------------------- */
 
 .lead__panel {
+  position: relative;
+  max-width: 40rem;
+  margin: clamp(3rem, 6vw, 4.5rem) auto 0;
   background: var(--c-surface);
   border: 1px solid var(--c-line);
-  padding: clamp(1.75rem, 3.4vw, 3rem);
+  padding: clamp(1.75rem, 3.6vw, 3.25rem);
 }
 
 .lead__form {
@@ -227,8 +221,9 @@
   margin-top: 1rem;
 }
 
-@media (max-width: 900px) {
-  .lead__grid {
-    grid-template-columns: 1fr;
+@media (max-width: 620px) {
+  .lead__meta {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 }

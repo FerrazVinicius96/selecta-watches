@@ -10,71 +10,69 @@
 }
 
 .hdr.is-condensed {
-  background: rgba(10, 10, 11, 0.72);
-  backdrop-filter: blur(14px) saturate(140%);
+  background: rgba(8, 8, 10, 0.74);
+  backdrop-filter: blur(16px) saturate(140%);
   border-bottom-color: var(--c-line);
 }
 
+/* Grade de 3 colunas iguais: garante que a marca fique opticamente no centro
+   independente do tamanho do menu ou do CTA nas laterais. */
 .hdr__inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  height: 84px;
+  gap: 1.5rem;
+  height: 92px;
   transition: height 0.6s var(--ease);
 }
 
 .hdr.is-condensed .hdr__inner {
-  height: 68px;
+  height: 70px;
 }
+
+/* ------------------------------ marca ---------------------------------- */
 
 .hdr__brand {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
-}
-
-.hdr__mark {
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--c-accent);
-  border-radius: 50%;
-  position: relative;
-  flex: none;
-}
-
-.hdr__mark::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 4px;
-  width: 1px;
-  height: 8px;
-  background: var(--c-accent);
+  gap: 0.1rem;
+  justify-self: center;
+  line-height: 1;
 }
 
 .hdr__name {
   font-family: var(--f-display);
-  font-size: 1.22rem;
-  letter-spacing: 0.16em;
+  font-size: 1.3rem;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
+  text-indent: 0.34em; /* compensa o tracking à direita e recentra o texto */
+  transition: color 0.4s var(--ease);
 }
 
-.hdr__name-thin {
-  color: var(--c-text-soft);
-  font-weight: 300;
+.hdr__sub {
+  font-size: 0.52rem;
+  letter-spacing: 0.44em;
+  text-transform: uppercase;
+  text-indent: 0.44em;
+  color: var(--c-text-mute);
 }
+
+.hdr__brand:hover .hdr__name {
+  color: var(--c-accent);
+}
+
+/* ------------------------------ nav ------------------------------------ */
 
 .hdr__nav {
   display: flex;
-  gap: 2.75rem;
-  margin-left: auto;
+  gap: 2.5rem;
 }
 
 .hdr__link {
   position: relative;
-  font-size: 0.7rem;
-  letter-spacing: 0.24em;
+  font-size: 0.66rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--c-text-soft);
   padding-block: 0.4rem;
@@ -103,13 +101,21 @@
   transform-origin: left;
 }
 
+/* ------------------------------ CTA ------------------------------------ */
+
+.hdr__side {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .hdr__cta {
-  margin-left: 2.5rem;
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  padding: 0.75rem 1.4rem;
+  padding: 0.7rem 1.5rem;
   border: 1px solid var(--c-line-strong);
+  border-radius: 999px;
+  white-space: nowrap;
   transition: background-color 0.45s var(--ease), color 0.45s var(--ease),
     border-color 0.45s var(--ease);
 }
@@ -128,12 +134,13 @@
   height: 34px;
   position: relative;
   z-index: 2;
+  justify-self: start;
 }
 
 .hdr__burger span {
   position: absolute;
-  left: 6px;
-  right: 6px;
+  left: 4px;
+  right: 4px;
   height: 1px;
   background: var(--c-text);
   transition: transform 0.45s var(--ease-out-expo), opacity 0.3s var(--ease);
@@ -162,7 +169,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
+  align-items: flex-start;
+  gap: 1.25rem;
   padding: 0 var(--gutter);
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.7s var(--ease-out-expo);
@@ -176,7 +184,7 @@
 
 .hdr__drawer a {
   font-family: var(--f-display);
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   color: var(--c-text);
   opacity: 0;
   transform: translateY(14px);
@@ -190,20 +198,37 @@
 
 .hdr__drawer-cta {
   font-family: var(--f-body) !important;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--c-accent) !important;
-  margin-top: 1rem;
+  font-size: 0.7rem !important;
+  margin-top: 1.5rem;
 }
 
 @media (max-width: 900px) {
   .hdr__nav,
-  .hdr__cta {
+  .hdr__side {
     display: none;
   }
 
+  .hdr__inner {
+    grid-template-columns: 1fr auto 1fr;
+    height: 76px;
+  }
+
+  .hdr.is-condensed .hdr__inner {
+    height: 64px;
+  }
+
+  /* Com nav e CTA ocultos sobram só marca e burger; posicionamento explícito
+     mantém a marca no centro óptico da barra. */
   .hdr__burger {
     display: block;
+    grid-area: 1 / 1;
+  }
+
+  .hdr__brand {
+    grid-area: 1 / 2;
+  }
+
+  .hdr__name {
+    font-size: 1.05rem;
   }
 }

@@ -6,6 +6,8 @@ const HERO_IMAGE =
 
 export default function Hero() {
   const mediaRef = useRef(null)
+  const haloRef = useRef(null)
+  const contentRef = useRef(null)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -13,22 +15,44 @@ export default function Hero() {
     return () => clearTimeout(t)
   }, [])
 
-  // Parallax duplo e muito contido (imagem sobe mais devagar que o texto).
-  // rAF + transform evitam reflow e mantêm 60fps.
+  // Parallax em 3 camadas com velocidades bem distintas (0.12 / 0.28 / 0.5).
+  // É a razão entre as velocidades — não o tamanho do deslocamento — que o
+  // olho lê como profundidade; camadas quase iguais parecem uma coisa só.
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     let frame = null
+    const apply = () => {
+      const y = window.scrollY
+      const limit = window.innerHeight * 1.2
+      if (y < limit) {
+        const p = y / window.innerHeight
+        if (mediaRef.current) {
+          mediaRef.current.style.transform = `translate3d(0, ${y * 0.12}px, 0) scale(${
+            1 + p * 0.06
+          })`
+          // Fundo desfoca e escurece conforme o scroll avança: dá a sensação
+          // de que a câmera está saindo de foco naquele plano.
+          mediaRef.current.style.filter = `blur(${Math.min(p * 6, 6)}px)`
+          mediaRef.current.style.opacity = `${Math.max(1 - p * 0.55, 0.35)}`
+        }
+        if (haloRef.current) {
+          haloRef.current.style.transform = `translate3d(0, ${y * 0.28}px, 0)`
+        }
+        if (contentRef.current) {
+          contentRef.current.style.transform = `translate3d(0, ${y * 0.5}px, 0)`
+          contentRef.current.style.opacity = `${Math.max(1 - p * 1.15, 0)}`
+        }
+      }
+      frame = null
+    }
+
     const onScroll = () => {
       if (frame) return
-      frame = requestAnimationFrame(() => {
-        const y = window.scrollY
-        if (mediaRef.current && y < window.innerHeight * 1.2) {
-          mediaRef.current.style.transform = `translate3d(0, ${y * 0.18}px, 0) scale(${
-            1 + y * 0.00008
-          })`
-        }
-        frame = null
-      })
+      frame = requestAnimationFrame(apply)
     }
+
+    apply()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -38,12 +62,17 @@ export default function Hero() {
 
   return (
     <section className={`hero ${ready ? 'is-ready' : ''}`} id="topo">
+      {/* Camada 1 (mais lenta): fotografia de fundo */}
       <div className="hero__media" ref={mediaRef}>
         <img src={HERO_IMAGE} alt="" aria-hidden="true" fetchPriority="high" />
-        <div className="hero__scrim" />
       </div>
 
-      <div className="hero__content shell">
+      {/* Camada 2 (média): halo de luz + scrim — plano intermediário */}
+      <div className="hero__halo" ref={haloRef} aria-hidden="true" />
+      <div className="hero__scrim" aria-hidden="true" />
+
+      {/* Camada 3 (mais rápida): tipografia, o primeiro plano */}
+      <div className="hero__content shell" ref={contentRef}>
         <p className="hero__kicker">
           <span>Curadoria privada · Desde 2009</span>
         </p>
@@ -60,21 +89,16 @@ export default function Hero() {
           </span>
         </h1>
 
-        <div className="hero__aside">
-          <p className="hero__lede">
-            Uma seleção restrita de relógios originais, cada peça autenticada e
-            documentada individualmente. Atendimento reservado, para quem
-            compra uma vez — e para sempre.
-          </p>
+        <p className="hero__lede">
+          Uma seleção restrita de relógios originais, cada peça autenticada e
+          documentada individualmente.
+        </p>
 
-          <div className="hero__actions">
-            <a href="#colecao" className="btn btn--solid">
-              Ver a coleção
-            </a>
-            <a href="#contato" className="btn">
-              Falar com especialista
-            </a>
-          </div>
+        {/* Um único CTA em pill, seguindo o ritmo adotado em toda a página. */}
+        <div className="hero__actions">
+          <a href="#colecao" className="btn btn--solid">
+            Ver a coleção
+          </a>
         </div>
       </div>
 

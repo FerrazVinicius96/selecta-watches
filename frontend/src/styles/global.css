@@ -30,10 +30,13 @@
   --f-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --f-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Ritmo vertical generoso: espaço é o principal sinal de sofisticação. */
-  --s-section: clamp(6rem, 12vw, 11rem);
+  /* Ritmo vertical generoso: espaço é o principal sinal de sofisticação.
+     Ampliado no ciclo de reestruturação — o padrão rolex.com respira muito
+     mais entre seções do que a versão anterior. */
+  --s-section: clamp(6rem, 11vw, 11rem);
   --gutter: clamp(1.25rem, 5vw, 5rem);
   --maxw: 1320px;
+  --maxw-narrow: 900px;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -48,6 +51,10 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* "proximity" (e não "mandatory"): só encaixa quando a rolagem já parou
+     perto de uma peça do catálogo. O visitante nunca perde o controle do
+     scroll, mas a vitrine tende a parar com um relógio por tela. */
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -122,36 +129,35 @@ button {
   padding-inline: var(--gutter);
 }
 
+.shell--narrow {
+  max-width: var(--maxw-narrow);
+}
+
 .section {
   padding-block: var(--s-section);
   position: relative;
 }
 
-/* Rótulo de seção: caixa alta, tracking largo, número de índice — vocabulário
-   editorial de revista, reforça a ideia de curadoria. */
+/* Rótulo de seção: caixa alta, tracking largo, sem ornamento. Vocabulário
+   editorial — anuncia o assunto antes do título, como em capa de revista. */
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
+  display: block;
   font-family: var(--f-body);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 400;
-  letter-spacing: 0.34em;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--c-text-mute);
 }
 
-.eyebrow::before {
-  content: '';
-  width: 2.5rem;
-  height: 1px;
-  background: var(--c-accent-line);
+.eyebrow--accent {
+  color: var(--c-accent);
 }
 
 .display {
   font-family: var(--f-display);
-  font-size: clamp(2.4rem, 5.4vw, 4.4rem);
-  line-height: 1.04;
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  line-height: 1.02;
 }
 
 .display em {
@@ -175,18 +181,22 @@ button {
 
 /* --------------------------- botões ------------------------------------ */
 
+/* CTA em pill: formato adotado no ciclo de reestruturação. A cápsula é o
+   único elemento arredondado da página — por contraste com todo o resto em
+   ângulo reto, ela vira o ponto de ação óbvio sem precisar gritar. */
 .btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1.05rem 2.2rem;
-  font-size: 0.72rem;
+  padding: 1.05rem 2.4rem;
+  font-size: 0.7rem;
   font-weight: 400;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   border: 1px solid var(--c-line-strong);
+  border-radius: 999px;
   overflow: hidden;
   transition: color 0.5s var(--ease), border-color 0.5s var(--ease);
   isolation: isolate;
@@ -275,6 +285,67 @@ button {
   transform: scaleX(1);
 }
 
+/* --------------------- ritmo de seção (padrão global) ------------------- */
+
+/* Estrutura repetida em todas as seções institucionais:
+   eyebrow → título grande → texto de apoio → um único CTA em pill.
+   A repetição é intencional: previsibilidade de ritmo é o que faz o site
+   parecer "de casa grande" em vez de colagem de blocos diferentes. */
+.sec-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(1.25rem, 2.4vw, 1.9rem);
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+.sec-intro--start {
+  align-items: flex-start;
+  text-align: left;
+  margin-inline: 0;
+}
+
+.sec-intro__lede {
+  color: var(--c-text-soft);
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.85;
+  max-width: 52ch;
+}
+
+.sec-intro__cta {
+  margin-top: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+/* ------------------- título com máscara por linha ----------------------- */
+
+.mask-title {
+  display: block;
+}
+
+.mask-title__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.mask-title__line > span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 1.15s var(--ease-out-expo);
+  transition-delay: var(--line-delay, 0ms);
+}
+
+.mask-title.is-visible .mask-title__line > span {
+  transform: none;
+}
+
+.mask-title em {
+  font-style: italic;
+  color: var(--c-accent);
+}
+
 /* --------------------------- reveal on scroll -------------------------- */
 
 .reveal {
@@ -298,6 +369,11 @@ button {
 
   .reveal {
     opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .mask-title__line > span {
     transform: none;
     transition: none;
   }

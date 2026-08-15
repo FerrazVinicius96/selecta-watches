@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createLead } from '../api/client'
 import Reveal from './Reveal'
+import SectionIntro from './SectionIntro'
 import './LeadForm.css'
 
 const PURPOSES = [
@@ -81,33 +82,23 @@ export default function LeadForm({ prefill }) {
 
   return (
     <section className="lead section" id="contato">
-      <div className="shell lead__grid">
-        <div className="lead__intro">
-          <Reveal as="p" className="eyebrow">
-            Atendimento privado
-          </Reveal>
-          <Reveal as="h2" className="display lead__title" delay={80}>
-            Uma conversa antes
-            <br />
-            de qualquer <em>compra</em>
-          </Reveal>
-          <Reveal as="p" className="lede lead__lede" delay={150}>
-            Deixe seu contato e um especialista retorna em até 1 dia útil, com o
-            catálogo completo e disponibilidade das peças do seu interesse. Sem
-            automação, sem lista de disparo.
-          </Reveal>
+      <div className="shell">
+        <SectionIntro
+          eyebrow="Atendimento privado"
+          lines={['Uma conversa antes', <>de qualquer <em>compra</em></>]}
+          lede="Deixe seu contato e um especialista retorna em até 1 dia útil, com o catálogo completo e a disponibilidade das peças do seu interesse. Sem automação, sem lista de disparo."
+        />
 
-          <Reveal className="lead__meta" delay={220}>
-            <div>
-              <span className="lead__meta-label">Resposta média</span>
-              <strong>4 horas úteis</strong>
-            </div>
-            <div>
-              <span className="lead__meta-label">Atendimento</span>
-              <strong>Seg a Sex, 9h – 19h</strong>
-            </div>
-          </Reveal>
-        </div>
+        <Reveal className="lead__meta" delay={220}>
+          <div>
+            <span className="lead__meta-label">Resposta média</span>
+            <strong>4 horas úteis</strong>
+          </div>
+          <div>
+            <span className="lead__meta-label">Atendimento</span>
+            <strong>Seg a Sex, 9h – 19h</strong>
+          </div>
+        </Reveal>
 
         <Reveal className="lead__panel" delay={120}>
           {status === 'success' ? (

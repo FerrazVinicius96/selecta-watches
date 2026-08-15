@@ -1,90 +1,144 @@
 .cat {
-  background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-void) 100%);
+  position: relative;
+  background: var(--c-void);
   border-top: 1px solid var(--c-line);
 }
 
-.cat__head {
-  display: grid;
-  grid-template-columns: 1.4fr 0.9fr;
-  gap: clamp(1.5rem, 5vw, 5rem);
-  align-items: end;
-  margin-bottom: clamp(3rem, 6vw, 5rem);
+/* Topo menor que --s-section: a seção anterior já contribui com o próprio
+   respiro inferior, e somar os dois deixava um vazio grande demais. */
+.cat__intro {
+  padding-block: clamp(4rem, 8vw, 7rem) clamp(3.5rem, 7vw, 6rem);
 }
 
-.cat__title {
-  margin-top: 1.25rem;
-}
+/* ============================ vitrine (reel) ============================= */
 
-.cat__note {
-  color: var(--c-text-mute);
-  font-size: 0.92rem;
-  line-height: 1.8;
-  max-width: 40ch;
-  padding-left: 1.5rem;
-  border-left: 1px solid var(--c-line);
-}
-
-.cat__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: clamp(1.5rem, 2.6vw, 2.75rem);
-}
-
-/* ------------------------------ card ----------------------------------- */
-
-.wcard {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: var(--c-surface);
-  border: 1px solid var(--c-line);
-  transition: border-color 0.6s var(--ease), transform 0.7s var(--ease-out-expo),
-    background-color 0.6s var(--ease);
-}
-
-.wcard:hover {
-  border-color: var(--c-accent-line);
-  background: var(--c-surface-2);
-  transform: translateY(-6px);
-}
-
-.wcard__media {
+.cat__reel {
   position: relative;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: #0d0d0f;
 }
 
-.wcard__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(0.4) brightness(0.86);
-  transform: scale(1.01);
-  transition: transform 1.2s var(--ease-out-expo), filter 0.9s var(--ease);
-}
+/* ------------------------------ HUD ------------------------------------- */
 
-.wcard:hover .wcard__media img {
-  transform: scale(1.07);
-  filter: grayscale(0) brightness(1);
-}
-
-/* Véu que se dissolve no hover: a peça "acende" quando recebe atenção. */
-.wcard__media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(8, 8, 10, 0.1), rgba(8, 8, 10, 0.55));
-  opacity: 1;
-  transition: opacity 0.8s var(--ease);
+/* height: 0 faz a barra "flutuar" sobre as peças sem ocupar espaço no fluxo —
+   assim cada peça continua ocupando exatamente uma tela cheia. */
+.cat__hud {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  height: 0;
+  overflow: visible;
   pointer-events: none;
 }
 
-.wcard:hover .wcard__media::after {
-  opacity: 0.35;
+.cat__hud-inner {
+  position: absolute;
+  top: 104px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease-out-expo);
 }
 
-.wcard__fallback {
+.cat__hud.is-on .cat__hud-inner {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.cat__hud-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--c-text-mute);
+}
+
+.cat__hud-ticks {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-right: auto;
+}
+
+.cat__tick {
+  padding: 0.6rem 0;
+  width: 30px;
+}
+
+.cat__tick span {
+  display: block;
+  height: 1px;
+  background: rgba(236, 233, 228, 0.28);
+  transition: background-color 0.6s var(--ease), transform 0.6s var(--ease-out-expo);
+  transform-origin: left;
+}
+
+.cat__tick.is-active span,
+.cat__tick:hover span {
+  background: var(--c-accent);
+  transform: scaleY(2);
+}
+
+.cat__hud-count {
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  color: var(--c-text-mute);
+  display: inline-flex;
+  gap: 0.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cat__hud-count strong {
+  font-weight: 400;
+  color: var(--c-accent);
+}
+
+.cat__hud-count i {
+  font-style: normal;
+  opacity: 0.5;
+}
+
+/* ============================== peça ==================================== */
+
+.piece {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #0b0b0d;
+  /* Snap suave: encaixa uma peça por vez sem sequestrar a rolagem do
+     visitante (proximity, não mandatory). */
+  scroll-snap-align: start;
+}
+
+.piece__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: scale(1.12);
+  will-change: transform;
+}
+
+.piece__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Tratamento cinematográfico: as fotos vêm de origens diferentes; a mesma
+     receita de dessaturação/contraste faz as três parecerem uma editorial só.
+     A cor volta na peça ativa — o relógio "acende" quando é a vez dele. */
+  filter: grayscale(0.6) contrast(1.12) brightness(0.42);
+  transition: filter 1.4s var(--ease);
+}
+
+.piece.is-active .piece__media img {
+  filter: grayscale(0.12) contrast(1.08) brightness(0.62);
+}
+
+.piece__fallback {
   width: 100%;
   height: 100%;
   display: grid;
@@ -92,102 +146,181 @@
   background: radial-gradient(circle at 50% 40%, #17171b, #0b0b0d);
 }
 
-.wcard__fallback span {
+.piece__fallback span {
   font-family: var(--f-display);
-  font-size: 3rem;
+  font-size: 6rem;
   letter-spacing: 0.2em;
-  color: rgba(200, 169, 106, 0.35);
+  color: rgba(200, 169, 106, 0.28);
 }
 
-.wcard__index {
+/* Vinheta + gradiente inferior: garante legibilidade do texto sobre qualquer
+   foto, inclusive as de fundo claro. */
+.piece__scrim {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 2;
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
-  color: var(--c-text-soft);
-  padding: 0.3rem 0.55rem;
-  border: 1px solid rgba(236, 233, 228, 0.2);
-  backdrop-filter: blur(6px);
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+      to top,
+      rgba(8, 8, 10, 0.95) 0%,
+      rgba(8, 8, 10, 0.72) 28%,
+      rgba(8, 8, 10, 0.18) 62%,
+      rgba(8, 8, 10, 0.62) 100%
+    ),
+    radial-gradient(110% 80% at 50% 45%, transparent 35%, rgba(8, 8, 10, 0.7) 100%);
 }
 
-.wcard__body {
+/* Scrim direcional: escurece justamente o lado onde o texto vai cair. É o que
+   garante contraste de leitura mesmo nas fotos de fundo claro, sem precisar
+   de uma caixa opaca atrás da tipografia. */
+.piece--start .piece__scrim::after,
+.piece--end .piece__scrim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.piece--start .piece__scrim::after {
+  background: linear-gradient(
+    to right,
+    rgba(8, 8, 10, 0.9) 0%,
+    rgba(8, 8, 10, 0.55) 32%,
+    transparent 62%
+  );
+}
+
+.piece--end .piece__scrim::after {
+  background: linear-gradient(
+    to left,
+    rgba(8, 8, 10, 0.9) 0%,
+    rgba(8, 8, 10, 0.55) 32%,
+    transparent 62%
+  );
+}
+
+.piece__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  padding-block: clamp(3.5rem, 9vh, 7rem);
+}
+
+.piece--start .piece__inner {
+  justify-content: flex-start;
+}
+
+.piece--end .piece__inner {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Alternar o lado do bloco de texto entre as peças evita que três telas
+   cheias seguidas pareçam a mesma tela repetida. */
+.piece__body {
+  max-width: 34rem;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  padding: clamp(1.4rem, 2vw, 1.9rem);
+  align-items: flex-start;
+  will-change: transform;
 }
 
-.wcard__brand {
-  font-size: 0.63rem;
-  letter-spacing: 0.3em;
+.piece--end .piece__body {
+  align-items: flex-end;
+}
+
+.piece__brand {
+  font-size: 0.64rem;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--c-accent);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
-.wcard__name {
+.piece__name {
   font-family: var(--f-display);
-  font-size: 1.7rem;
-  font-weight: 400;
-  line-height: 1.15;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 6.5vw, 5.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
 }
 
-.wcard__desc {
-  margin-top: 0.85rem;
+.piece__ref {
+  margin-top: 1.25rem;
   color: var(--c-text-soft);
   font-size: 0.9rem;
-  line-height: 1.75;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
 }
 
-.wcard__foot {
+.piece__foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: clamp(1rem, 3vw, 2.25rem);
   flex-wrap: wrap;
-  margin-top: auto;
+  margin-top: clamp(1.75rem, 4vw, 2.5rem);
   padding-top: 1.5rem;
+  border-top: 1px solid var(--c-line-strong);
+  width: 100%;
 }
 
-.wcard__price {
+.piece--end .piece__foot {
+  justify-content: flex-end;
+}
+
+.piece__price {
   font-family: var(--f-display);
-  font-size: 1.25rem;
-  color: var(--c-text);
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   letter-spacing: 0.02em;
+  color: var(--c-text);
 }
 
-.wcard__cta {
+/* ----------------------------- selo ------------------------------------- */
+
+.piece__seal {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.64rem;
+  gap: 0.7rem;
+  font-size: 0.58rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--c-text-soft);
-  transition: color 0.4s var(--ease);
+  max-width: 12rem;
+  line-height: 1.5;
 }
 
-.wcard__cta:hover {
-  color: var(--c-accent);
+.piece__seal svg {
+  flex: none;
+  fill: none;
+  stroke: var(--c-accent);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.wcard__arrow {
-  display: inline-block;
-  transition: transform 0.5s var(--ease-out-expo);
+/* Desenho progressivo do traço: dasharray = comprimento total do caminho,
+   dashoffset animado até 0 faz a linha aparecer como se fosse escrita. */
+.piece__seal-ring {
+  stroke-dasharray: 95;
+  stroke-dashoffset: 95;
+  transition: stroke-dashoffset 1.3s var(--ease-out-expo) 0.25s;
 }
 
-.wcard__cta:hover .wcard__arrow {
-  transform: translateX(5px);
+.piece__seal-check {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.7s var(--ease-out-expo) 1.1s;
 }
 
-/* ------------------------------ rodapé --------------------------------- */
+.piece.is-active .piece__seal-ring,
+.piece.is-active .piece__seal-check {
+  stroke-dashoffset: 0;
+}
+
+.piece__cta {
+  margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+/* ============================ rodapé da seção =========================== */
 
 .cat__foot {
   display: flex;
@@ -195,55 +328,54 @@
   justify-content: space-between;
   gap: 1.5rem;
   flex-wrap: wrap;
-  margin-top: clamp(2.5rem, 4vw, 3.5rem);
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--c-line);
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
 }
 
-.cat__count {
-  font-size: 0.66rem;
-  letter-spacing: 0.26em;
+.cat__foot-note {
+  font-size: 0.64rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--c-text-mute);
 }
 
-/* --------------------------- estados ----------------------------------- */
+/* ============================== estados ================================= */
 
-.skel {
-  border: 1px solid var(--c-line);
-  padding-bottom: 1.6rem;
+.cat__skel {
+  min-height: 70svh;
+  display: flex;
+  align-items: flex-end;
+  background: linear-gradient(180deg, #101013, #0b0b0d);
+}
+
+.cat__skel-inner {
+  padding-bottom: 6rem;
   animation: skelPulse 1.9s ease-in-out infinite;
 }
 
-.skel__media {
-  aspect-ratio: 1 / 1;
-  background: var(--c-surface-2);
-}
-
 .skel__line {
-  height: 10px;
-  margin: 1rem 1.6rem 0;
+  height: 12px;
+  margin-top: 1.25rem;
   background: var(--c-surface-2);
 }
 
 .skel__line--sm {
-  width: 28%;
+  width: 10%;
 }
 .skel__line--md {
-  width: 55%;
+  width: 22%;
 }
 .skel__line--lg {
-  width: 78%;
-  height: 20px;
+  width: 42%;
+  height: 46px;
 }
 
 @keyframes skelPulse {
   0%,
   100% {
-    opacity: 0.45;
+    opacity: 0.4;
   }
   50% {
-    opacity: 0.9;
+    opacity: 0.85;
   }
 }
 
@@ -251,6 +383,7 @@
   border: 1px solid var(--c-line);
   background: var(--c-surface);
   padding: clamp(2.5rem, 6vw, 4.5rem);
+  margin-bottom: var(--s-section);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -307,13 +440,68 @@
   margin-top: 1rem;
 }
 
-@media (max-width: 900px) {
-  .cat__head {
-    grid-template-columns: 1fr;
-    align-items: start;
+/* ============================= responsivo =============================== */
+
+@media (max-width: 860px) {
+  /* No mobile toda peça alinha à esquerda: alternar lados numa tela estreita
+     só bagunça a leitura, não cria ritmo. */
+  .piece--end .piece__inner {
+    justify-content: flex-start;
+    text-align: left;
   }
 
-  .cat__note {
-    padding-left: 1.25rem;
+  .piece--end .piece__body,
+  .piece--end .piece__foot {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .piece__body {
+    max-width: 100%;
+  }
+
+  .piece__cta {
+    width: 100%;
+  }
+
+  .piece__foot {
+    gap: 1rem;
+  }
+
+  .piece__seal {
+    max-width: none;
+  }
+
+  .cat__hud-inner {
+    top: 86px;
+  }
+
+  .cat__hud-label {
+    display: none;
+  }
+
+  .cat__foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cat__foot .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .piece {
+    scroll-snap-align: none;
+  }
+
+  .piece__media,
+  .piece__body {
+    transform: none !important;
+  }
+
+  .piece__seal-ring,
+  .piece__seal-check {
+    stroke-dashoffset: 0;
   }
 }

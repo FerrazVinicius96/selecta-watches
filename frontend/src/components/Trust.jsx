@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Reveal from './Reveal'
+import SectionIntro from './SectionIntro'
 import './Trust.css'
 
 // Conteúdo placeholder plausível — o PROJECT.md registra que depoimentos e
@@ -74,16 +75,12 @@ export default function Trust() {
   return (
     <section className="trust section" id="confianca">
       <div className="shell">
-        <header className="trust__head">
-          <Reveal as="p" className="eyebrow">
-            Confiança
-          </Reveal>
-          <Reveal as="h2" className="display trust__title" delay={80}>
-            O que sustenta uma
-            <br />
-            compra de <em>alto valor</em>
-          </Reveal>
-        </header>
+        <SectionIntro
+          eyebrow="Confiança"
+          lines={['O que sustenta uma', <>compra de <em>alto valor</em></>]}
+          lede="Garantia própria, laudo individual e transporte segurado. Compromissos escritos, não promessas de vendedor."
+          cta={{ href: '#contato', label: 'Tirar uma dúvida' }}
+        />
 
         <div className="trust__seals">
           {SEALS.map((seal, i) => (
