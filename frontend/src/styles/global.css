@@ -1,0 +1,311 @@
+/* =========================================================================
+   Selecta Watches — Design System
+   Direção: minimalista dark. Luxo aqui é contenção: pouca cor, muito espaço
+   negativo, uma única cor de acento (champanhe) usada com parcimônia e
+   tipografia com contraste forte entre serifada display e sans geométrica.
+   ========================================================================= */
+
+:root {
+  /* Superfícies — quase-preto levemente quente, nunca #000 puro (preto puro
+     achata o dark e some com as sombras). */
+  --c-void: #08080a;
+  --c-bg: #0a0a0b;
+  --c-surface: #101012;
+  --c-surface-2: #16161a;
+  --c-line: rgba(255, 255, 255, 0.09);
+  --c-line-strong: rgba(255, 255, 255, 0.18);
+
+  /* Texto */
+  --c-text: #ece9e4;
+  --c-text-soft: #a5a29c;
+  --c-text-mute: #6f6d69;
+
+  /* Acento único: champanhe/ouro dessaturado — sinaliza valor sem parecer
+     dourado de banner promocional. */
+  --c-accent: #c8a96a;
+  --c-accent-soft: rgba(200, 169, 106, 0.14);
+  --c-accent-line: rgba(200, 169, 106, 0.32);
+
+  /* Tipografia */
+  --f-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --f-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Ritmo vertical generoso: espaço é o principal sinal de sofisticação. */
+  --s-section: clamp(6rem, 12vw, 11rem);
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --maxw: 1320px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Textura sutil de grão sobre o fundo: evita que o dark chapado pareça
+   "template". Puro CSS/SVG inline, sem custo de rede. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--f-display);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-void);
+}
+
+/* --------------------------- utilitários ------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--s-section);
+  position: relative;
+}
+
+/* Rótulo de seção: caixa alta, tracking largo, número de índice — vocabulário
+   editorial de revista, reforça a ideia de curadoria. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--f-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--c-text-mute);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 2.5rem;
+  height: 1px;
+  background: var(--c-accent-line);
+}
+
+.display {
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 5.4vw, 4.4rem);
+  line-height: 1.04;
+}
+
+.display em {
+  font-style: italic;
+  color: var(--c-accent);
+}
+
+.lede {
+  color: var(--c-text-soft);
+  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  line-height: 1.8;
+  max-width: 54ch;
+}
+
+.rule {
+  height: 1px;
+  background: var(--c-line);
+  border: 0;
+  margin: 0;
+}
+
+/* --------------------------- botões ------------------------------------ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.05rem 2.2rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  border: 1px solid var(--c-line-strong);
+  overflow: hidden;
+  transition: color 0.5s var(--ease), border-color 0.5s var(--ease);
+  isolation: isolate;
+}
+
+/* Preenchimento que sobe de baixo no hover — micro-interação discreta, sem
+   movimento brusco do elemento. */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c-accent);
+  transform: translateY(101%);
+  transition: transform 0.55s var(--ease-out-expo);
+}
+
+.btn:hover {
+  color: var(--c-void);
+  border-color: var(--c-accent);
+}
+
+.btn:hover::before {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 1px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
+.btn--solid {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-void);
+}
+
+.btn--solid::before {
+  background: var(--c-text);
+}
+
+.btn--solid:hover {
+  color: var(--c-void);
+  border-color: var(--c-text);
+}
+
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn[disabled]::before {
+  transform: translateY(101%);
+}
+
+/* Link com sublinhado que cresce a partir da esquerda. */
+.link-underline {
+  position: relative;
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-text-soft);
+  padding-bottom: 0.35rem;
+  transition: color 0.4s var(--ease);
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--c-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.link-underline:hover {
+  color: var(--c-text);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* --------------------------- reveal on scroll -------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Acessibilidade: quem pede menos movimento recebe a página sem animação. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

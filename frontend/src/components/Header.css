@@ -1,0 +1,209 @@
+.hdr {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  transition: background-color 0.6s var(--ease), backdrop-filter 0.6s var(--ease),
+    border-color 0.6s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+
+.hdr.is-condensed {
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--c-line);
+}
+
+.hdr__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  height: 84px;
+  transition: height 0.6s var(--ease);
+}
+
+.hdr.is-condensed .hdr__inner {
+  height: 68px;
+}
+
+.hdr__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hdr__mark {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--c-accent);
+  border-radius: 50%;
+  position: relative;
+  flex: none;
+}
+
+.hdr__mark::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 1px;
+  height: 8px;
+  background: var(--c-accent);
+}
+
+.hdr__name {
+  font-family: var(--f-display);
+  font-size: 1.22rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hdr__name-thin {
+  color: var(--c-text-soft);
+  font-weight: 300;
+}
+
+.hdr__nav {
+  display: flex;
+  gap: 2.75rem;
+  margin-left: auto;
+}
+
+.hdr__link {
+  position: relative;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-text-soft);
+  padding-block: 0.4rem;
+  transition: color 0.4s var(--ease);
+}
+
+.hdr__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: var(--c-accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.hdr__link:hover {
+  color: var(--c-text);
+}
+
+.hdr__link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.hdr__cta {
+  margin-left: 2.5rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.4rem;
+  border: 1px solid var(--c-line-strong);
+  transition: background-color 0.45s var(--ease), color 0.45s var(--ease),
+    border-color 0.45s var(--ease);
+}
+
+.hdr__cta:hover {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-void);
+}
+
+/* ------------------------------ mobile --------------------------------- */
+
+.hdr__burger {
+  display: none;
+  width: 34px;
+  height: 34px;
+  position: relative;
+  z-index: 2;
+}
+
+.hdr__burger span {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 1px;
+  background: var(--c-text);
+  transition: transform 0.45s var(--ease-out-expo), opacity 0.3s var(--ease);
+}
+
+.hdr__burger span:nth-child(1) {
+  top: 14px;
+}
+.hdr__burger span:nth-child(2) {
+  top: 20px;
+}
+
+.hdr__burger.is-open span:nth-child(1) {
+  transform: translateY(3px) rotate(45deg);
+}
+.hdr__burger.is-open span:nth-child(2) {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+.hdr__drawer {
+  position: fixed;
+  inset: 0;
+  /* Abaixo do header (z 100) para o botão de fechar continuar acessível. */
+  z-index: 90;
+  background: var(--c-void);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0 var(--gutter);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.7s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.hdr__drawer.is-open {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+
+.hdr__drawer a {
+  font-family: var(--f-display);
+  font-size: 2.4rem;
+  color: var(--c-text);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease-out-expo);
+}
+
+.hdr__drawer.is-open a {
+  opacity: 1;
+  transform: none;
+}
+
+.hdr__drawer-cta {
+  font-family: var(--f-body) !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-accent) !important;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .hdr__nav,
+  .hdr__cta {
+    display: none;
+  }
+
+  .hdr__burger {
+    display: block;
+  }
+}
