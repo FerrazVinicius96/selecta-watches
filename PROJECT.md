@@ -195,7 +195,7 @@ completo.
 **Entregue neste ciclo:**
 
 - Motion premium na landing pública (branch `feature/ui-motion-enhancements`,
-  commitada localmente, ainda sem push e sem mesclar à `main`): scroll-triggered
+  commitada com push para o remoto, ainda sem mesclar à `main`): scroll-triggered
   reveals com easing custom em todas as seções, staggering em grupos de
   elementos, text masking/line reveal nos títulos grandes, selos com traço
   SVG se desenhando, marquee infinito na faixa de maisons, parallax em 4
